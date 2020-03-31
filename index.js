@@ -10,8 +10,6 @@ const User = require('./models/user');
 
 const webSocketPort = 1331;
 const restPort = 1332;
-const restServer = express();
-const webSocket = new WebSocketServer({port: webSocketPort});
 
 const adminUser = new User("Admin");
 const globalChat = new Chat("Global Chat");
@@ -23,13 +21,23 @@ const chatService = new ChatService(chats);
 const chatController = new ChatController(chatService);
 chatService.subscribeToChat(adminUser, globalChatId);
 
-restServer.get('/', (req, res) => {
-    chatController.getChatHistory(req, res);
-})
-
-restServer.listen(restPort, () => console.log("Rest server activated"));
+setRestServer(restPort);
 
 function addDefaultMessages(chat, user) {
     chat.addChatMessage(new ChatMessage(user, "Welcome to global chat!"));
     chat.addChatMessage(new ChatMessage(user, "Enjoy!"));
+}
+
+function setWsServer(port) {
+    const webSocket = new WebSocketServer({port: webSocketPort});
+    
+}
+
+function setRestServer(port) {
+    const restServer = express();
+    restServer.get('/', (req, res) => {
+        chatController.getChatHistory(req, res);
+    })
+    
+    restServer.listen(port, () => console.log("Rest server activated"));
 }

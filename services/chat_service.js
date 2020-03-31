@@ -34,13 +34,18 @@ function ChatService(chats) {
     };
 
     this.subscribeToChat = function(user, chatId) {
-        let subscribedUsers = this.chatsSubscription[chatId];
+        let subscribedUsers = this.getSubscribedUsers(chatId);
+        subscribedUsers.add(user);
+        this.chatsSubscription[chatId] = subscribedUsers;
+    };
+
+    this.getSubscribedUsers = function(chatId) {
+        let subscribedUsers = this.chatsSubscription[chatID];
         if (!subscribedUsers) {
             subscribedUsers = new Set();
         }
 
-        subscribedUsers.add(user.id);
-        this.chatsSubscription[chatId] = subscribedUsers;
+        return subscribedUsers;
     };
 }
 
