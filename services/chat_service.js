@@ -40,7 +40,7 @@ function ChatService(chats) {
     };
 
     this.getSubscribedUsers = function(chatId) {
-        let subscribedUsers = this.chatsSubscription[chatID];
+        let subscribedUsers = this.chatsSubscription[chatId];
         if (!subscribedUsers) {
             subscribedUsers = new Set();
         }

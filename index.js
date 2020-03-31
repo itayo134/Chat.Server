@@ -21,19 +21,20 @@ const chatService = new ChatService(chats);
 const chatController = new ChatController(chatService);
 chatService.subscribeToChat(adminUser, globalChatId);
 
-setRestServer(restPort);
+setRestServer(restPort, chatController);
+setWsServer(webSocketPort, chatController);
 
 function addDefaultMessages(chat, user) {
     chat.addChatMessage(new ChatMessage(user, "Welcome to global chat!"));
     chat.addChatMessage(new ChatMessage(user, "Enjoy!"));
 }
 
-function setWsServer(port) {
-    const webSocket = new WebSocketServer({port: webSocketPort});
-    
+function setWsServer(port, chatController) {
+    const webSocket = new WebSocketServer({port: port});
+    webSocket.on("connection", chatController.onConnectionOpened);
 }
 
-function setRestServer(port) {
+function setRestServer(port, chatController) {
     const restServer = express();
     restServer.get('/', (req, res) => {
         chatController.getChatHistory(req, res);
