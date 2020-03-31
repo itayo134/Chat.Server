@@ -1,12 +1,33 @@
-function ChatService() {
-    this.chatMessages = [];
-    this.allUsers = [];
-    this.addChatMessage = function(chatMessage) {
-        this.chatMessages.push(chatMessage)
+const Chat = require('./../models/chat');
+
+function ChatService(chats) {
+    if (!chats) {
+        chats = {};
     }
-    this.addUser = function(user) {
-        this.allUsers.push(user);
+    this.chats = chats;
+
+    this.createChat = function(chatName) {
+        let chat = new Chat(chatName);
+        this.chats[chat.id] = chat;
+        return chat.id;
+    }
+    this.addMessageToChat = function(chatId, chatMessage) {
+        let chat = this.chats[chatId];
+        if (!chat) {
+            return false;
+        }
+
+        chat.addChatMessage(chatMessage);
+        return true;
+    }
+    this.getChatHistory = function(chatId) {
+        let chat = this.chats[chatId];
+        if (!chat) {
+            return false;
+        }
+
+        return chat.chatMessages;
     }
 }
 
-exports.ChatService = ChatService;
+module.exports = ChatService;

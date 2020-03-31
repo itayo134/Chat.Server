@@ -5,4 +5,4 @@ function ChatMessage(userName, message) {
     }
 }
 
-exports.ChatMessage = ChatMessage;
+module.exports = ChatMessage;
