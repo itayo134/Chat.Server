@@ -21,6 +21,7 @@ let chats = {};
 chats[globalChatId] = globalChat;
 const chatService = new ChatService(chats);
 const chatController = new ChatController(chatService);
+chatService.subscribeToChat(adminUser, globalChatId);
 
 restServer.get('/', (req, res) => {
     chatController.getChatHistory(req, res);
