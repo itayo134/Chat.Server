@@ -1,6 +1,6 @@
-function ChatMessage(userName, message) {
+function ChatMessage(user, message) {
     return {
-        userName,
+        user: user,
         message
     }
 }

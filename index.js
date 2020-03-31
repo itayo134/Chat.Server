@@ -1,30 +1,34 @@
 const express = require('express');
-const { createServer } = require('http');
+let WebSocketServer = require('ws').Server;
+let http = require('http');
 const ChatService = require('./services/chat_service');
 const ChatMessage = require('./models/chat_message');
 const Chat = require('./models/chat');
 const globalChatId = require('./consts').GLOBAL_CHAT_ID;
 const ChatController = require('./controllers/chat_controller');
+const User = require('./models/user');
 
-const app = express();
-const port = 3000;
+const webSocketPort = 1331;
+const restPort = 1332;
+const restServer = express();
+const webSocket = new WebSocketServer({port: webSocketPort});
 
+const adminUser = new User("Admin");
 const globalChat = new Chat("Global Chat");
 globalChat.id = globalChatId;
-addDefaultMessages(globalChat);
+addDefaultMessages(globalChat, adminUser);
 let chats = {};
 chats[globalChatId] = globalChat;
 const chatService = new ChatService(chats);
 const chatController = new ChatController(chatService);
 
-app.get('/', (req, res) => {
+restServer.get('/', (req, res) => {
     chatController.getChatHistory(req, res);
 })
 
-app.listen(port, () => console.log("Listening"));
+restServer.listen(restPort, () => console.log("Rest server activated"));
 
-
-function addDefaultMessages(chat) {
-    chat.addChatMessage(new ChatMessage("Admin", "Welcome to global chat!"));
-    chat.addChatMessage(new ChatMessage("Admin", "Enjoy!"));
+function addDefaultMessages(chat, user) {
+    chat.addChatMessage(new ChatMessage(user, "Welcome to global chat!"));
+    chat.addChatMessage(new ChatMessage(user, "Enjoy!"));
 }
