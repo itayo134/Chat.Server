@@ -12,13 +12,19 @@ function ChatController(chatService) {
 
     this.onConnectionOpened = function(ws) {
         console.log("Opened new connection");
+        let user = null;
 
         ws.on("message", (function(message) {
             message = JSON.parse(message);
             const event = message.event;
+            user = message.user;
             const eventHandler = this._eventHandlers[event];
             eventHandler(message, ws);
         }).bind(this))
+
+        ws.on("close", (function() {         
+            
+        }).bind(this));
     };
 
     this._handleSubscribe = function(message, ws) {
