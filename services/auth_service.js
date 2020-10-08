@@ -24,3 +24,5 @@ function AuthService() {
         return false;
     };
 }
+
+module.exports = AuthService;
