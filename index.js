@@ -2,6 +2,7 @@ const express = require('express');
 let WebSocketServer = require('ws').Server;
 let http = require('http');
 const ChatService = require('./services/chat_service');
+const AuthService = require('./services/auth_service');
 const ChatMessage = require('./models/chat_message');
 const Chat = require('./models/chat');
 const globalChatId = require('./consts').GLOBAL_CHAT_ID;
@@ -18,7 +19,8 @@ addDefaultMessages(globalChat, adminUser);
 let chats = {};
 chats[globalChatId] = globalChat;
 const chatService = new ChatService(chats);
-const chatController = new ChatController(chatService);
+const authService = new AuthService();
+const chatController = new ChatController(chatService, authService);
 chatService.subscribeToChat(adminUser, globalChatId);
 
 setRestServer(restPort, chatController);
